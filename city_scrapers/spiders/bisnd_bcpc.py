@@ -2,8 +2,6 @@ from city_scrapers_core.constants import COMMISSION
 from city_scrapers_core.items import Meeting
 from city_scrapers_core.spiders import CityScrapersSpider
 from dateutil.parser import parse
-import pdb
-
 
 
 class BisndBcpcSpider(CityScrapersSpider):
@@ -11,13 +9,12 @@ class BisndBcpcSpider(CityScrapersSpider):
     agency = "Burleigh County Planning Commission"
     timezone = "America/Chicago"
     start_urls = [
-        "https://www.burleigh.gov/government/boardscommittees/planning-zoning-commission/"
+        "https://www.burleigh.gov/government/boardscommittees/planning-zoning-commission/"  # noqa
     ]
     location = {
         "name": "Tom Baker Room, City/County Building",
         "address": "221 N 5th St, Bismarck",
     }
-
 
     def parse(self, response):
         """
@@ -27,19 +24,13 @@ class BisndBcpcSpider(CityScrapersSpider):
         needs.
         """
         time = response.css(".tbltitle p::text").get()
-        link1 = response.css(".info p")[6].css("a::attr(href)").get() # live video coverage
-        link2 = response.css(".info p")[7].css("a::attr(href)").get() # live radio coverage
-        title1 = response.css(".info p::text")[7].get() # 'Video coverage provided by Dakota Media Access.\xa0 Watch live on Government Access Cable Channels 2 or 602 HD.\xa0 Stream live or replay later at '
-        title2 = response.css(".info p::text")[8].get() # 'Stream live radio coverage from KDAK FM 102.5 FM Radio at '
+        link1 = response.css(".info p")[6].css("a::attr(href)").get()
+        link2 = response.css(".info p")[7].css("a::attr(href)").get()
+        title1 = response.css(".info p::text")[7].get()
+        title2 = response.css(".info p::text")[8].get()
         links = [
-            {
-                "title": title1.replace('\xa0', ' '),
-                "href": link1
-            },
-            {
-                "title": title2,
-                "href": link2
-            }
+            {"title": title1.replace("\xa0", " "), "href": link1},
+            {"title": title2, "href": link2},
         ]
         # pdb.set_trace()
         for item in response.css("table")[1].css("tr"):
@@ -50,7 +41,7 @@ class BisndBcpcSpider(CityScrapersSpider):
                     title="Planning & Zoning Commission Monthly Meeting",
                     description="",
                     classification=self._parse_classification(item),
-                    start=self._parse_start(item, time), # at 5:15 PM
+                    start=self._parse_start(item, time),
                     end=self._parse_end(item),
                     all_day=self._parse_all_day(item),
                     time_notes=self._parse_time_notes(item),
