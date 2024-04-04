@@ -70,22 +70,28 @@ class BisndBcpcSpider(CityScrapersSpider):
         date = self._parse_date(item)
         # get minutes link
         year = date.split()[-1]
-        minutes_href = response.xpath(
-            f'//a[contains(text(), "{year} Planning and Zoning Commission Minutes")]'
-        ).css('::attr(href)').get()
+        minutes_href = (
+            response.xpath(
+                f'//a[contains(text(), "{year} Planning and Zoning Commission Minutes")]'
+            )
+            .css("::attr(href)")
+            .get()
+        )
         if minutes_href:
             minutes_url = urljoin(response.url, minutes_href)
             output.insert(
                 0,
                 {
                     "title": f"{year} Planning and Zoning Commission Minutes",
-                    "href": minutes_url
-                }
+                    "href": minutes_url,
+                },
             )
         # get agenda link
-        agenda_href = response.xpath(
-            f'//a[contains(text(), "{date} Agenda")]'
-        ).css('::attr(href)').get()
+        agenda_href = (
+            response.xpath(f'//a[contains(text(), "{date} Agenda")]')
+            .css("::attr(href)")
+            .get()
+        )
         if agenda_href:
             agenda_url = urljoin(response.url, agenda_href)
             output.insert(0, {"title": f"{date} Agenda Packet", "href": agenda_url})

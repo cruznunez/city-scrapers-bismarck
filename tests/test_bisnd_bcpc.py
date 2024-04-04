@@ -66,18 +66,21 @@ def test_location():
 
 
 def test_source():
-    assert parsed_items[0]["source"] == "https://www.burleigh.gov/government/boardscommittees/planning-zoning-commission/" # noqa
+    assert (
+        parsed_items[0]["source"]
+        == "https://www.burleigh.gov/government/boardscommittees/planning-zoning-commission/"
+    )  # noqa
 
 
 def test_links():
     assert parsed_items[0]["links"] == [
         {
             "title": "January 10, 2024 Agenda Packet",
-            "href": "https://www.burleigh.gov/media/acljydn1/2024-01-10-agenda-packet.pdf", # noqa
+            "href": "https://www.burleigh.gov/media/acljydn1/2024-01-10-agenda-packet.pdf",  # noqa
         },
         {
             "title": "2024 Planning and Zoning Commission Minutes",
-            "href": "https://www.burleigh.gov/media/kwnjqgjt/2024-minutes.pdf"
+            "href": "https://www.burleigh.gov/media/kwnjqgjt/2024-minutes.pdf",
         },
         {
             "title": "Video coverage provided by Dakota Media Access.  Watch live on Government Access Cable Channels 2 or 602 HD.  Stream live or replay later at ",  # noqa
