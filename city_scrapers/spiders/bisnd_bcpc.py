@@ -1,7 +1,8 @@
 from city_scrapers_core.constants import COMMISSION
-from city_scrapers_core.items import Meeting
 from city_scrapers_core.spiders import CityScrapersSpider
+from city_scrapers_core.items import Meeting
 from dateutil.parser import parse
+from urllib.parse import urljoin
 
 
 class BisndBcpcSpider(CityScrapersSpider):
@@ -46,7 +47,7 @@ class BisndBcpcSpider(CityScrapersSpider):
                     all_day=False,
                     time_notes="",
                     location=self.location,
-                    links=links,
+                    links=self._parse_links(response, links, item),
                     source=response.url,
                 )
 
@@ -55,13 +56,41 @@ class BisndBcpcSpider(CityScrapersSpider):
 
                 yield meeting
 
+    def _parse_date(self, item):
+        """Parse start date"""
+        return item.css("td:first_child::text").get()
+
     def _parse_start(self, item, time):
         """Parse start datetime as a naive datetime object."""
-        date_str = item.css("td:first_child::text").get()
-        parsed_datetime = parse(f"{date_str} {time}")
+        date = self._parse_date(item)
+        parsed_datetime = parse(f"{date} {time}")
 
         return parsed_datetime
 
-    def _parse_links(self, item):
+    def _parse_links(self, response, links, item):
         """Parse or generate links."""
-        return [{"href": "", "title": ""}]
+        output = links.copy()
+        date = self._parse_date(item)
+        # get minutes link
+        year = date.split()[-1]
+        minutes_href = response.xpath(
+            f'//a[contains(text(), "{year} Planning and Zoning Commission Minutes")]'
+        ).css('::attr(href)').get()
+        if minutes_href:
+            minutes_url = urljoin(response.url, minutes_href)
+            output.insert(
+                0,
+                {
+                    "title": f"{year} Planning and Zoning Commission Minutes",
+                    "href": minutes_url
+                }
+            )
+        # get agenda link
+        agenda_href = response.xpath(
+            f'//a[contains(text(), "{date} Agenda")]'
+        ).css('::attr(href)').get()
+        if agenda_href:
+            agenda_url = urljoin(response.url, agenda_href)
+            output.insert(0, {"title": f"{date} Agenda Packet", "href": agenda_url})
+
+        return output
