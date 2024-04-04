@@ -20,9 +20,6 @@ class BisndBcpcSpider(CityScrapersSpider):
     def parse(self, response):
         """
         `parse` should always `yield` Meeting items.
-
-        Change the `_parse_title`, `_parse_start`, etc methods to fit your scraping
-        needs.
         """
         time = response.css(".tbltitle p::text").get()
         link1 = response.css(".info p")[6].css("a::attr(href)").get()
