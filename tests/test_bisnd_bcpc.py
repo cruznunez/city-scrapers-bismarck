@@ -68,8 +68,8 @@ def test_location():
 def test_source():
     assert (
         parsed_items[0]["source"]
-        == "https://www.burleigh.gov/government/boardscommittees/planning-zoning-commission/"
-    )  # noqa
+        == "https://www.burleigh.gov/government/boardscommittees/planning-zoning-commission/" # noqa
+    )
 
 
 def test_links():
